@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Booking Details
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<h1>Booking Details</h1>
+
+<!-- Display Success/Error Messages -->
+{% if messages %}
+<ul class="messages">
+
+  <!-- Loop through all Django messages -->
+  {% for message in messages %}
+  
+  <!-- Message with dynamic class from Django tags -->
+  <li class="message {{ message.tags }}">
+    {{ message }}
+  </li>
+
+  {% endfor %}
+</ul>
+{% endif %}
+
+<!-- Booking Information Table -->
+<table>
+
+  <!-- Booking ID -->
+  <tr>
+    <th>Booking ID</th>
+    <td>{{ booking.id }}</td>
+  </tr>
+
+  <!-- Driver Username -->
+  <tr>
+    <th>Driver</th>
+    <td>{{ booking.user.username }}</td>
+  </tr>
+
+  <!-- Vehicle Plate Number -->
+  <tr>
+    <th>Vehicle</th>
+    <td>{{ booking.vehicle.plate_number }}</td>
+  </tr>
+
+  <!-- Parking Lot Name -->
+  <tr>
+    <th>Parking Lot</th>
+    <td>{{ booking.slot.parking_lot.name }}</td>
+  </tr>
+
+  <!-- Parking Slot Number -->
+  <tr>
+    <th>Slot</th>
+    <td>{{ booking.slot.slot_number }}</td>
+  </tr>
+
+  <!-- Booking Status -->
+  <tr>
+    <th>Status</th>
+    <td>{{ booking.get_booking_status_display }}</td>
+  </tr>
+
+  <!-- Booking Start Time -->
+  <tr>
+    <th>Start</th>
+    <td>{{ booking.start_time }}</td>
+  </tr>
+
+  <!-- Booking End Time -->
+  <tr>
+    <th>End</th>
+    <td>{{ booking.end_time }}</td>
+  </tr>
+
+</table>
+
+<!-- Payment Form Section -->
+<h2>Make a Payment</h2>
+
+<!-- Payment Form -->
+<form method="post" action="{% url 'park:make_payment' booking.id %}">
+
+  <!-- CSRF Token for Security -->
+  {% csrf_token %}
+
+  <!-- Amount Input -->
+  <label for="amount">Amount</label>
+  <input 
+    type="number"
+    step="0.01"
+    name="amount"
+    id="amount"
+    required
+  />
+
+  <!-- Payment Method Dropdown -->
+  <label for="payment_method">Payment Method</label>
+
+  <select name="payment_method" id="payment_method" required>
+
+    <!-- Default Empty Option -->
+    <option value="">Choose a method</option>
+
+    <!-- Cash Payment -->
+    <option value="cash">Cash</option>
+
+    <!-- Card Payment -->
+    <option value="card">Card</option>
+
+    <!-- Mobile Money Payment -->
+    <option value="mobile_money">Mobile Money</option>
+
+  </select>
+
+  <!-- Submit Button -->
+  <button type="submit">
+    Submit Payment
+  </button>
+
+</form>
+
+<!-- Show Payment History if Payments Exist -->
+{% if payments %}
+
+<h2>Payment History</h2>
+
+<table>
+
+  <!-- Table Head -->
+  <thead>
+    <tr>
+      <th>Amount</th>
+      <th>Method</th>
+      <th>Status</th>
+      <th>Paid At</th>
+    </tr>
+  </thead>
+
+  <!-- Table Body -->
+  <tbody>
+
+    <!-- Loop Through Payments -->
+    {% for payment in payments %}
+
+    <tr>
+
+      <!-- Payment Amount -->
+      <td>{{ payment.amount }}</td>
+
+      <!-- Payment Method -->
+      <td>{{ payment.get_payment_method_display }}</td>
+
+      <!-- Payment Status -->
+      <td>{{ payment.get_payment_status_display }}</td>
+
+      <!-- Payment Date -->
+      <td>{{ payment.paid_at }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+  </tbody>
+
+</table>
+
+{% endif %}
+
+{% endblock %}

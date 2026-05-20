@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ParkEase - Home
+{% endblock %}
+
+{% block content %}
+
+<!-- Main Dashboard Heading -->
+<h1>ParkEase Parking Dashboard</h1>
+
+<!-- Display Django Messages -->
+{% if messages %}
+<ul class="messages">
+
+  <!-- Loop Through Messages -->
+  {% for message in messages %}
+
+  <!-- Message Item with Dynamic Class -->
+  <li class="message {{ message.tags }}">
+    {{ message }}
+  </li>
+
+  {% endfor %}
+</ul>
+{% endif %}
+
+<!-- Available Parking Slots Section -->
+<h2>Available Parking Slots</h2>
+
+<!-- Check if Slots Exist -->
+{% if available_slots %}
+
+<table>
+
+  <!-- Table Header -->
+  <thead>
+    <tr>
+      <th>Lot</th>
+      <th>Slot</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <!-- Table Body -->
+  <tbody>
+
+    <!-- Loop Through Available Slots -->
+    {% for slot in available_slots %}
+
+    <tr>
+
+      <!-- Parking Lot Name -->
+      <td>{{ slot.parking_lot.name }}</td>
+
+      <!-- Slot Number -->
+      <td>{{ slot.slot_number }}</td>
+
+      <!-- Slot Status -->
+      <td>{{ slot.get_status_display }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+  </tbody>
+
+</table>
+
+{% else %}
+
+<!-- Message if No Slots Are Available -->
+<p>No available slots at the moment.</p>
+
+{% endif %}
+
+<!-- Booking Form Section -->
+<h2>Create a Booking</h2>
+
+<!-- Check if User Has Registered Vehicles -->
+{% if vehicles %}
+
+<!-- Booking Form -->
+<form method="post">
+
+  <!-- CSRF Security Token -->
+  {% csrf_token %}
+
+  <!-- Parking Slot Selection -->
+  <label for="slot">Parking Slot</label>
+
+  <select name="slot" id="slot" required>
+
+    <!-- Default Option -->
+    <option value="">Choose a slot</option>
+
+    <!-- Loop Through Slots -->
+    {% for slot in available_slots %}
+
+    <option value="{{ slot.id }}">
+      {{ slot.parking_lot.name }} - {{ slot.slot_number }}
+    </option>
+
+    {% endfor %}
+
+  </select>
+
+  <!-- Vehicle Selection -->
+  <label for="vehicle">Vehicle</label>
+
+  <select name="vehicle" id="vehicle" required>
+
+    <!-- Default Option -->
+    <option value="">Choose your vehicle</option>
+
+    <!-- Loop Through Vehicles -->
+    {% for vehicle in vehicles %}
+
+    <option value="{{ vehicle.id }}">
+      {{ vehicle.plate_number }} ({{ vehicle.vehicle_type }})
+    </option>
+
+    {% endfor %}
+
+  </select>
+
+  <!-- Booking Start Time -->
+  <label for="start_time">Start Time</label>
+
+  <input
+    type="datetime-local"
+    name="start_time"
+    id="start_time"
+    required
+  />
+
+  <!-- Booking End Time -->
+  <label for="end_time">End Time</label>
+
+  <input
+    type="datetime-local"
+    name="end_time"
+    id="end_time"
+    required
+  />
+
+  <!-- Submit Booking Button -->
+  <button type="submit">
+    Book Slot
+  </button>
+
+</form>
+
+{% else %}
+
+<!-- Message if User Has No Vehicles -->
+<p>
+  You do not have any registered vehicles yet.
+  Please add a vehicle in your profile before booking.
+</p>
+
+{% endif %}
+
+{% endblock %}
