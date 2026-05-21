@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Attendant Dashboard{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Attendant Dashboard</h1>
+  <p>Welcome, {{ user.username }}. This page is only visible to attendants.</p>
+  <p>You can manage parking slots, confirm bookings, and track vehicle arrivals here.</p>
+</div>
+{% endblock %}
