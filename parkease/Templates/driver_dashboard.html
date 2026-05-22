@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Driver Dashboard{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Driver Dashboard</h1>
+  <p>Welcome, {{ user.username }}. This page is only visible to drivers.</p>
+  <p>You can view your bookings, add vehicles, and manage your parking reservations here.</p>
+</div>
+{% endblock %}

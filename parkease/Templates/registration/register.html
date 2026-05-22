@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1>Create your account</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="field-group">
+      <label for="id_username">Username</label>
+      <input type="text" name="username" id="id_username" required>
+    </div>
+
+    <div class="field-group">
+      <label for="id_password">Password</label>
+      <input type="password" name="password" id="id_password" required>
+    </div>
+
+    <div class="field-group">
+      <label for="id_password_confirm">Confirm password</label>
+      <input type="password" name="password_confirm" id="id_password_confirm" required>
+    </div>
+
+    <div class="field-group">
+      <label for="id_phone_number">Phone number</label>
+      <input type="text" name="phone_number" id="id_phone_number" required>
+    </div>
+
+    <div class="field-group">
+      <label for="id_role">Role</label>
+      <select name="role" id="id_role" required>
+        <option value="">Select your role</option>
+        {% for value, label in roles %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="primary">Register</button>
+  </form>
+</div>
+{% endblock %}

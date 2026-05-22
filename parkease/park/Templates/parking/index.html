@@ -5,160 +5,96 @@ ParkEase - Home
 {% endblock %}
 
 {% block content %}
+<div class="card-grid">
+  <div class="card">
+    <h1>ParkEase</h1>
+    <p>Welcome to ParkEase. Manage your parking bookings, check available slots, and access your dashboard.</p>
+    {% if user.is_authenticated %}
+    <p>Logged in as <strong>{{ user.username }}</strong>.</p>
+    {% else %}
+    <p>If you already have an account, please <a href="{% url 'park:login' %}">login</a> or <a href="{% url 'park:register' %}">register</a>.</p>
+    {% endif %}
+  </div>
 
-<!-- Main Dashboard Heading -->
-<h1>ParkEase Parking Dashboard</h1>
+  <div class="card">
+    <h2>Available spots</h2>
+    {% if available_slots %}
+    <table>
+      <thead>
+        <tr>
+          <th>Lot</th>
+          <th>Slot</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for slot in available_slots %}
+        <tr>
+          <td>{{ slot.parking_lot.name }}</td>
+          <td>{{ slot.slot_number }}</td>
+          <td>{{ slot.get_status_display }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No available slots at the moment.</p>
+    {% endif %}
+  </div>
 
-<!-- Display Django Messages -->
+  <div class="card">
+    <h2>Your next step</h2>
+    {% if vehicles %}
+    <p>Start a new booking from the form below.</p>
+    {% else %}
+    <p>You do not have any registered vehicles yet. Add a vehicle in your profile before booking.</p>
+    {% endif %}
+  </div>
+</div>
+
 {% if messages %}
-<ul class="messages">
-
-  <!-- Loop Through Messages -->
-  {% for message in messages %}
-
-  <!-- Message Item with Dynamic Class -->
-  <li class="message {{ message.tags }}">
-    {{ message }}
-  </li>
-
-  {% endfor %}
-</ul>
-{% endif %}
-
-<!-- Available Parking Slots Section -->
-<h2>Available Parking Slots</h2>
-
-<!-- Check if Slots Exist -->
-{% if available_slots %}
-
-<table>
-
-  <!-- Table Header -->
-  <thead>
-    <tr>
-      <th>Lot</th>
-      <th>Slot</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-
-  <!-- Table Body -->
-  <tbody>
-
-    <!-- Loop Through Available Slots -->
-    {% for slot in available_slots %}
-
-    <tr>
-
-      <!-- Parking Lot Name -->
-      <td>{{ slot.parking_lot.name }}</td>
-
-      <!-- Slot Number -->
-      <td>{{ slot.slot_number }}</td>
-
-      <!-- Slot Status -->
-      <td>{{ slot.get_status_display }}</td>
-
-    </tr>
-
+<div class="card" style="margin-top: 24px;">
+  <ul class="message-list">
+    {% for message in messages %}
+      <li class="message-item {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
     {% endfor %}
-
-  </tbody>
-
-</table>
-
-{% else %}
-
-<!-- Message if No Slots Are Available -->
-<p>No available slots at the moment.</p>
-
+  </ul>
+</div>
 {% endif %}
 
-<!-- Booking Form Section -->
-<h2>Create a Booking</h2>
-
-<!-- Check if User Has Registered Vehicles -->
 {% if vehicles %}
-
-<!-- Booking Form -->
-<form method="post">
-
-  <!-- CSRF Security Token -->
-  {% csrf_token %}
-
-  <!-- Parking Slot Selection -->
-  <label for="slot">Parking Slot</label>
-
-  <select name="slot" id="slot" required>
-
-    <!-- Default Option -->
-    <option value="">Choose a slot</option>
-
-    <!-- Loop Through Slots -->
-    {% for slot in available_slots %}
-
-    <option value="{{ slot.id }}">
-      {{ slot.parking_lot.name }} - {{ slot.slot_number }}
-    </option>
-
-    {% endfor %}
-
-  </select>
-
-  <!-- Vehicle Selection -->
-  <label for="vehicle">Vehicle</label>
-
-  <select name="vehicle" id="vehicle" required>
-
-    <!-- Default Option -->
-    <option value="">Choose your vehicle</option>
-
-    <!-- Loop Through Vehicles -->
-    {% for vehicle in vehicles %}
-
-    <option value="{{ vehicle.id }}">
-      {{ vehicle.plate_number }} ({{ vehicle.vehicle_type }})
-    </option>
-
-    {% endfor %}
-
-  </select>
-
-  <!-- Booking Start Time -->
-  <label for="start_time">Start Time</label>
-
-  <input
-    type="datetime-local"
-    name="start_time"
-    id="start_time"
-    required
-  />
-
-  <!-- Booking End Time -->
-  <label for="end_time">End Time</label>
-
-  <input
-    type="datetime-local"
-    name="end_time"
-    id="end_time"
-    required
-  />
-
-  <!-- Submit Booking Button -->
-  <button type="submit">
-    Book Slot
-  </button>
-
-</form>
-
-{% else %}
-
-<!-- Message if User Has No Vehicles -->
-<p>
-  You do not have any registered vehicles yet.
-  Please add a vehicle in your profile before booking.
-</p>
-
+<div class="card" style="margin-top: 24px;">
+  <h2>Quick booking</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="field-group">
+      <label for="slot">Parking Slot</label>
+      <select name="slot" id="slot" required>
+        <option value="">Choose a slot</option>
+        {% for slot in available_slots %}
+        <option value="{{ slot.id }}">{{ slot.parking_lot.name }} - {{ slot.slot_number }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field-group">
+      <label for="vehicle">Vehicle</label>
+      <select name="vehicle" id="vehicle" required>
+        <option value="">Choose your vehicle</option>
+        {% for vehicle in vehicles %}
+        <option value="{{ vehicle.id }}">{{ vehicle.plate_number }} ({{ vehicle.vehicle_type }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field-group">
+      <label for="start_time">Start Time</label>
+      <input type="datetime-local" name="start_time" id="start_time" required />
+    </div>
+    <div class="field-group">
+      <label for="end_time">End Time</label>
+      <input type="datetime-local" name="end_time" id="end_time" required />
+    </div>
+    <button type="submit" class="primary">Book Slot</button>
+  </form>
+</div>
 {% endif %}
-
 {% endblock %}

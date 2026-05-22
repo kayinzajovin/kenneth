@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    {% block title %}
+    ParkEase
+    {% endblock %}
+  </title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f4f7fb;
+      color: #333;
+    }
+
+    nav {
+      padding: 15px 25px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    nav a {
+      margin-right: 15px;
+      color: #1f2937;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      color: #2563eb;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      padding: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .card-grid > .card {
+      flex: 1 1 320px;
+      max-width: 360px;
+    }
+
+    .card h1 {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: 28px;
+      color: #111827;
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .field-group input,
+    .field-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    button.primary {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button.primary:hover {
+      background: #1d4ed8;
+    }
+
+    .message-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px;
+    }
+
+    .message-item {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .message-item.success {
+      background: #ecfdf5;
+      color: #166534;
+      border: 1px solid #a7f3d0;
+    }
+
+    .message-item.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="{% url 'park:index' %}">Home</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'park:logout' %}">Logout</a>
+      <span style="color:#475569; margin-left:12px;">Logged in as {{ user.username }}</span>
+    {% else %}
+      <a href="{% url 'park:login' %}">Login</a>
+      <a href="{% url 'park:register' %}">Register</a>
+    {% endif %}
+  </nav>
+
+  {% if messages %}
+  <ul class="message-list">
+    {% for message in messages %}
+      <li class="message-item {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+</body>
+
+</html>

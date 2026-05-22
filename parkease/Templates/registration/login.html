@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Login to ParkEase</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="field-group">
+      <label for="id_username">Username</label>
+      {{ form.username }}
+    </div>
+
+    <div class="field-group">
+      <label for="id_password">Password</label>
+      {{ form.password }}
+    </div>
+
+    <input type="hidden" name="next" value="{{ next }}" />
+    <button type="submit" class="primary">Login</button>
+  </form>
+</div>
+{% endblock %}
